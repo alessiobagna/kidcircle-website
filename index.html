@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KidCircle - Connect Parents, Create Playdates | Dubai's Premier Playdate App</title>
+    <meta name="description" content="Join KidCircle - Dubai's innovative app for parents to find playdates, connect families, and create magical childhood memories. Try our free demo and get Premium subscription for the first 100 early adopters!">
+    
+    <!-- Google Fonts - Fredoka -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎈</text></svg>">
+    
+    <style>
+        :root {
+            --purple: #8B5CF6;
+            --yellow: #FEF3C7;
+            --green: #34D399;
+            --background: #FFFBEB;
+            --white: #FFFFFF;
+            --text: #1F2937;
+            --muted-text: #6B7280;
+            --border: #E5E7EB;
+            --card-bg: #F9FAFB;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Fredoka', cursive;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Playful Background Animation */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape-1 {
+            width: 80px;
+            height: 80px;
+            background: var(--purple);
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            width: 60px;
+            height: 60px;
+            background: var(--green);
+            top: 20%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .shape-3 {
+            width: 100px;
+            height: 100px;
+            background: var(--yellow);
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        .shape-4 {
+            width: 70px;
+            height: 70px;
+            background: var(--purple);
+            bottom: 10%;
+            right: 10%;
+            animation-delay: 1s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--purple);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--purple);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 4rem 0;
+            text-align: center;
+            background: linear-gradient(135deg, var(--background) 0%, var(--yellow) 100%);
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--purple);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--muted-text);
+            margin-bottom: 2rem;
+            font-weight: 400;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--purple);
+            color: var(--white);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .premium-badge {
+            background: var(--green);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            display: inline-block;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 4rem 0;
+            background: var(--white);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--purple);
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px solid var(--border);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--purple);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--purple);
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            color: var(--muted-text);
+            font-weight: 400;
+        }
+
+        /* App Preview Section */
+        .app-preview {
+            padding: 4rem 0;
+            background: linear-gradient(135deg, var(--background) 0%, var(--yellow) 100%);
+            text-align: center;
+        }
+
+        .preview-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .app-mockup {
+            background: var(--white);
+            border-radius: 30px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border: 3px solid var(--purple);
+        }
+
+        .mockup-screens {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .screen-preview {
+            background: var(--background);
+            border-radius: 15px;
+            padding: 1rem;
+            border: 2px solid var(--border);
+        }
+
+        .screen-title {
+            font-weight: 600;
+            color: var(--purple);
+            margin-bottom: 0.5rem;
+        }
+
+        .screen-description {
+            font-size: 0.9rem;
+            color: var(--muted-text);
+        }
+
+        /* Feedback Form Section */
+        .feedback-section {
+            padding: 4rem 0;
+            background: var(--white);
+        }
+
+        .feedback-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .feedback-form {
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 20px;
+            border: 2px solid var(--border);
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-family: 'Fredoka', cursive;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--purple);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .rating-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .rating-option {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .rating-option input[type="radio"] {
+            display: none;
+        }
+
+        .rating-label {
+            display: block;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .rating-option input[type="radio"]:checked + .rating-label {
+            background: var(--purple);
+            color: var(--white);
+            border-color: var(--purple);
+        }
+
+        .submit-button {
+            background: var(--green);
+            color: var(--white);
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Fredoka', cursive;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 211, 153, 0.4);
+        }
+
+        /* Counter Section */
+        .counter-section {
+            background: var(--purple);
+            color: var(--white);
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .counter-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .counter-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--yellow);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text);
+            color: var(--white);
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .rating-group {
+                flex-direction: column;
+            }
+            
+            .feedback-form {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+        <div class="floating-shape shape-4"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="#" class="logo">🎈 KidCircle</a>
+                <ul class="nav-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#preview">Try Demo</a></li>
+                    <li><a href="#feedback">Feedback</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Connect Parents,<br>Create Playdates! 🌟</h1>
+                <p class="hero-subtitle">Dubai's innovative app for parents to find perfect playdate matches, connect families, and create magical childhood memories.</p>
+                <a href="#preview" class="cta-button">🚀 Try Our Free Demo</a>
+                <div class="premium-badge">🎁 First 100 Early Adopters Get FREE Premium Year!</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Why Parents Love KidCircle</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3 class="feature-title">AI-Powered Matching</h3>
+                    <p class="feature-description">Smart algorithms match families based on children's interests, ages, and preferences for perfect playdates.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3 class="feature-title">Parent & Nanny Chat</h3>
+                    <p class="feature-description">Secure messaging with location sharing, group creation, and professional parent coaching integration.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h3 class="feature-title">Smart Calendar</h3>
+                    <p class="feature-description">AI-powered scheduling with automatic recommendations, parental coaching sessions, and easy coordination.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚗</div>
+                    <h3 class="feature-title">Ride Booking</h3>
+                    <p class="feature-description">Integrated ride booking with Oto.car, SafeDryver, Uber, and Careem for safe transportation to playdates.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">Venue Discovery</h3>
+                    <p class="feature-description">Find the best indoor and outdoor venues with exclusive discounts and real-time availability.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛍️</div>
+                    <h3 class="feature-title">Smart Shopping</h3>
+                    <p class="feature-description">AI suggestions for playdate essentials with direct MumzWorld integration for convenient shopping.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- App Preview Section -->
+    <section id="preview" class="app-preview">
+        <div class="container">
+            <div class="preview-container">
+                <h2 class="section-title">Experience KidCircle Now!</h2>
+                <p style="font-size: 1.2rem; margin-bottom: 2rem; color: var(--muted-text);">Try our fully functional demo and see how KidCircle transforms playdate planning in Dubai.</p>
+                
+                <div class="app-mockup">
+                    <div class="mockup-screens">
+                        <div class="screen-preview">
+                            <h4 class="screen-title">👨‍👩‍👧‍👦 Smart Profiles</h4>
+                            <p class="screen-description">Create detailed family profiles with AI assistance for perfect matching</p>
+                        </div>
+                        <div class="screen-preview">
+                            <h4 class="screen-title">🔍 Intelligent Search</h4>
+                            <p class="screen-description">Find families with filters or natural language AI search</p>
+                        </div>
+                        <div class="screen-preview">
+                            <h4 class="screen-title">💬 Parent Chat</h4>
+                            <p class="screen-description">Coordinate playdates with integrated messaging and group creation</p>
+                        </div>
+                        <div class="screen-preview">
+                            <h4 class="screen-title">📅 Smart Calendar</h4>
+                            <p class="screen-description">AI-powered scheduling with coaching sessions and ride booking</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <a href="https://kidcircle-app.vercel.app" target="_blank" class="cta-button" style="font-size: 1.5rem; padding: 1.5rem 3rem;">
+                    🌟 Launch KidCircle Demo
+                </a>
+                <p style="margin-top: 1rem; color: var(--muted-text);">⏱️ Takes less than 2 minutes to explore all features</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Counter Section -->
+    <section class="counter-section">
+        <div class="container">
+            <p class="counter-text">Premium Spots Remaining for Early Adopters:</p>
+            <div class="counter-number" id="counter">87</div>
+            <p style="margin-top: 1rem;">🎁 Get your FREE Premium Year - Limited Time!</p>
+        </div>
+    </section>
+
+    <!-- Feedback Form Section -->
+    <section id="feedback" class="feedback-section">
+        <div class="container">
+            <div class="feedback-container">
+                <h2 class="section-title">Share Your Experience & Get Premium Free! 🎁</h2>
+                <p style="text-align: center; font-size: 1.2rem; margin-bottom: 3rem; color: var(--muted-text);">
+                    Help us improve KidCircle and secure your FREE Premium subscription for the first year!
+                </p>
+                
+                <form class="feedback-form" id="feedbackForm">
+                    <div class="form-group">
+                        <label class="form-label" for="parentName">👤 Your Name *</label>
+                        <input type="text" id="parentName" name="parentName" class="form-input" required placeholder="Enter your full name">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="email">📧 Email Address *</label>
+                        <input type="email" id="email" name="email" class="form-input" required placeholder="your.email@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="childrenAges">👶 Children's Ages</label>
+                        <input type="text" id="childrenAges" name="childrenAges" class="form-input" placeholder="e.g., 3, 6, 8 years old">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="neighborhood">🏠 Dubai Neighborhood</label>
+                        <select id="neighborhood" name="neighborhood" class="form-select">
+                            <option value="">Select your area</option>
+                            <option value="downtown">Downtown Dubai</option>
+                            <option value="marina">Dubai Marina</option>
+                            <option value="jbr">JBR</option>
+                            <option value="jlt">JLT</option>
+                            <option value="springs">The Springs</option>
+                            <option value="meadows">The Meadows</option>
+                            <option value="lakes">The Lakes</option>
+                            <option value="greens">The Greens</option>
+                            <option value="views">The Views</option>
+                            <option value="hills">Emirates Hills</option>
+                            <option value="jumeirah">Jumeirah</option>
+                            <option value="beach">Jumeirah Beach Residence</option>
+                            <option value="palm">Palm Jumeirah</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">⭐ Overall User Experience Rating *</label>
+                        <div class="rating-group">
+                            <div class="rating-option">
+                                <input type="radio" id="rating1" name="rating" value="1" required>
+                                <label for="rating1" class="rating-label">😞<br>Poor</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="rating2" name="rating" value="2">
+                                <label for="rating2" class="rating-label">😐<br>Fair</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="rating3" name="rating" value="3">
+                                <label for="rating3" class="rating-label">🙂<br>Good</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="rating4" name="rating" value="4">
+                                <label for="rating4" class="rating-label">😊<br>Great</label>
+                            </div>
+                            <div class="rating-option">
+                                <input type="radio" id="rating5" name="rating" value="5">
+                                <label for="rating5" class="rating-label">🤩<br>Amazing</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="usefulness">💡 What do you find most useful about KidCircle? *</label>
+                        <textarea id="usefulness" name="usefulness" class="form-textarea" required placeholder="Describe the features or aspects that would be most valuable for your family..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="concerns">⚠️ Any Concerns or Hesitations?</label>
+                        <textarea id="concerns" name="concerns" class="form-textarea" placeholder="Share any concerns about privacy, safety, usability, or other aspects..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="improvements">🚀 Suggestions for Improvement</label>
+                        <textarea id="improvements" name="improvements" class="form-textarea" placeholder="What features would you like to see added or improved?"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="recommendation">🗣️ Would you recommend KidCircle to other parents? *</label>
+                        <select id="recommendation" name="recommendation" class="form-select" required>
+                            <option value="">Select your answer</option>
+                            <option value="definitely">Definitely! I'd actively recommend it</option>
+                            <option value="probably">Probably, if they have similar needs</option>
+                            <option value="maybe">Maybe, depends on the situation</option>
+                            <option value="probably_not">Probably not</option>
+                            <option value="definitely_not">Definitely not</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="submit-button">
+                        🎁 Submit Feedback & Claim FREE Premium Year
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 KidCircle. Connecting Dubai families, one playdate at a time. 🌟</p>
+        </div>
+    </footer>
+
+    <script>
+        // Counter animation
+        function updateCounter() {
+            const counter = document.getElementById('counter');
+            let current = parseInt(counter.textContent);
+            if (current > 50) {
+                current = Math.max(50, current - Math.floor(Math.random() * 3) - 1);
+                counter.textContent = current;
+                localStorage.setItem('kidcircle_counter', current);
+            }
+        }
+
+        // Load saved counter or start at 87
+        const savedCounter = localStorage.getItem('kidcircle_counter');
+        if (savedCounter) {
+            document.getElementById('counter').textContent = savedCounter;
+        }
+
+        // Update counter every 30 seconds
+        setInterval(updateCounter, 30000);
+
+        // Form submission
+        document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Collect form data
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // Simulate submission
+            alert('🎉 Thank you for your feedback! Your FREE Premium subscription has been reserved. We\'ll contact you at ' + data.email + ' with your access details within 24 hours!');
+            
+            // Update counter
+            const counter = document.getElementById('counter');
+            let current = parseInt(counter.textContent);
+            if (current > 0) {
+                current = Math.max(0, current - 1);
+                counter.textContent = current;
+                localStorage.setItem('kidcircle_counter', current);
+            }
+            
+            // Reset form
+            this.reset();
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add entrance animations
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.feature-card, .screen-preview');
+            elements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }
+            });
+        }
+
+        // Initialize animations
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', animateOnScroll);
+
+        // Set initial state for animations
+        document.querySelectorAll('.feature-card, .screen-preview').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease';
+        });
+    </script>
+</body>
+</html>
