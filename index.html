@@ -708,18 +708,271 @@
         // Update counter every 30 seconds
         setInterval(updateCounter, 30000);
 
-        // Form submission
+        // Simple CSV/Excel storage solution
         document.getElementById('feedbackForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Collect form data
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
+            // Show loading state
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalText = submitButton.innerHTML;
+            submitButton.innerHTML = '⏳ Saving...';
+            submitButton.disabled = true;
             
-            // Simulate submission
-            alert('🎉 Thank you for your feedback! Your FREE Premium subscription has been reserved. We\'ll contact you at ' + data.email + ' with your access details within 24 hours!');
+            try {
+                // Collect form data
+                const formData = new FormData(this);
+                const data = Object.fromEntries(formData);
+                
+                // Add metadata
+                const feedbackData = {
+                    ...data,
+                    submittedAt: new Date().toISOString(),
+                    submittedDate: new Date().toLocaleDateString(),
+                    submittedTime: new Date().toLocaleTimeString(),
+                    source: 'website'
+                };
+
+                // Save to localStorage for CSV generation
+                saveFeedbackToCSV(feedbackData);
+
+                // Show success message
+                showSuccessMessage(data.email);
+                
+                // Update counter
+                updateCounter();
+                
+                // Reset form
+                this.reset();
+                
+                // Show download option
+                showDownloadOption();
+                
+            } catch (error) {
+                console.error('Save error:', error);
+                alert('Error saving feedback. Please try again.');
+            } finally {
+                // Restore button state
+                submitButton.innerHTML = originalText;
+                submitButton.disabled = false;
+            }
+        });
+
+        // CSV Storage Functions
+        function saveFeedbackToCSV(feedbackData) {
+            try {
+                // Get existing feedback from localStorage
+                const existingFeedback = JSON.parse(localStorage.getItem('kidcircle_feedback_data') || '[]');
+                
+                // Add new feedback
+                existingFeedback.push(feedbackData);
+                
+                // Save back to localStorage
+                localStorage.setItem('kidcircle_feedback_data', JSON.stringify(existingFeedback));
+                
+                console.log('Feedback saved successfully. Total responses:', existingFeedback.length);
+            } catch (error) {
+                console.error('Error saving feedback:', error);
+                throw error;
+            }
+        }
+
+        function generateCSV() {
+            try {
+                const feedbackData = JSON.parse(localStorage.getItem('kidcircle_feedback_data') || '[]');
+                
+                if (feedbackData.length === 0) {
+                    alert('No feedback data to export!');
+                    return;
+                }
+
+                // Define CSV headers
+                const headers = [
+                    'Submission Date',
+                    'Submission Time', 
+                    'Parent Name',
+                    'Email',
+                    'Children Ages',
+                    'Dubai Neighborhood',
+                    'Overall Rating',
+                    'Most Useful Features',
+                    'Concerns/Hesitations',
+                    'Suggestions for Improvement',
+                    'Would Recommend',
+                    'Source'
+                ];
+
+                // Create CSV content
+                let csvContent = headers.join(',') + '\n';
+
+                feedbackData.forEach(row => {
+                    const csvRow = [
+                        `"${row.submittedDate || ''}"`,
+                        `"${row.submittedTime || ''}"`,
+                        `"${row.parentName || ''}"`,
+                        `"${row.email || ''}"`,
+                        `"${row.childrenAges || ''}"`,
+                        `"${row.neighborhood || ''}"`,
+                        `"${row.rating || ''}"`,
+                        `"${(row.usefulness || '').replace(/"/g, '""')}"`,
+                        `"${(row.concerns || '').replace(/"/g, '""')}"`,
+                        `"${(row.improvements || '').replace(/"/g, '""')}"`,
+                        `"${row.recommendation || ''}"`,
+                        `"${row.source || 'website'}"`
+                    ];
+                    csvContent += csvRow.join(',') + '\n';
+                });
+
+                return csvContent;
+            } catch (error) {
+                console.error('Error generating CSV:', error);
+                alert('Error generating CSV file');
+                return null;
+            }
+        }
+
+        function downloadCSV() {
+            const csvContent = generateCSV();
+            if (!csvContent) return;
+
+            // Create blob and download
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
             
-            // Update counter
+            if (navigator.msSaveBlob) {
+                // IE 10+
+                navigator.msSaveBlob(blob, 'kidcircle_feedback.csv');
+            } else {
+                // Other browsers
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `kidcircle_feedback_${new Date().toISOString().split('T')[0]}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        function generateExcel() {
+            try {
+                const feedbackData = JSON.parse(localStorage.getItem('kidcircle_feedback_data') || '[]');
+                
+                if (feedbackData.length === 0) {
+                    alert('No feedback data to export!');
+                    return;
+                }
+
+                // Create Excel-compatible CSV with UTF-8 BOM
+                const BOM = '\uFEFF';
+                const csvContent = generateCSV();
+                
+                if (!csvContent) return;
+
+                const blob = new Blob([BOM + csvContent], { 
+                    type: 'application/vnd.ms-excel;charset=utf-8;' 
+                });
+                
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `kidcircle_feedback_${new Date().toISOString().split('T')[0]}.xlsx`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch (error) {
+                console.error('Error generating Excel file:', error);
+                alert('Error generating Excel file');
+            }
+        }
+
+        function showSuccessMessage(email) {
+            // Create and show custom modal with download options
+            const modal = document.createElement('div');
+            modal.innerHTML = `
+                <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+                    <div style="background: white; padding: 2rem; border-radius: 15px; text-align: center; max-width: 500px; margin: 1rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🎉</div>
+                        <h3 style="color: #8B5CF6; margin-bottom: 1rem;">Thank You for Your Feedback!</h3>
+                        <p style="margin-bottom: 1.5rem;">Your feedback has been saved successfully! We'll contact you at <strong>${email}</strong> with your access details within 24 hours!</p>
+                        <p style="margin-bottom: 1rem; color: #666; font-size: 0.9rem;">✅ Response saved locally on your device</p>
+                        <button onclick="this.closest('div').parentElement.remove()" style="background: #8B5CF6; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer;">Close</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function showDownloadOption() {
+            // Check if we have any data to download
+            const feedbackData = JSON.parse(localStorage.getItem('kidcircle_feedback_data') || '[]');
+            
+            if (feedbackData.length > 0) {
+                // Create download notification
+                const notification = document.createElement('div');
+                notification.innerHTML = `
+                    <div id="downloadNotification" style="position: fixed; top: 20px; right: 20px; background: #10B981; color: white; padding: 1rem; border-radius: 10px; z-index: 9999; max-width: 300px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                        <div style="font-weight: bold; margin-bottom: 0.5rem;">📊 Data Ready for Export</div>
+                        <div style="font-size: 0.9rem; margin-bottom: 1rem;">You have ${feedbackData.length} feedback response(s) saved</div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button onclick="downloadCSV(); this.closest('div').remove();" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 0.5rem 0.75rem; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">📄 CSV</button>
+                            <button onclick="generateExcel(); this.closest('div').remove();" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 0.5rem 0.75rem; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">📊 Excel</button>
+                        </div>
+                        <button onclick="this.closest('div').remove()" style="position: absolute; top: 5px; right: 8px; background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem;">×</button>
+                    </div>
+                `;
+                document.body.appendChild(notification);
+                
+                // Auto-hide after 10 seconds
+                setTimeout(() => {
+                    const notif = document.getElementById('downloadNotification');
+                    if (notif) notif.remove();
+                }, 10000);
+            }
+        }
+
+        // Admin function to view all collected data
+        function viewAllData() {
+            const feedbackData = JSON.parse(localStorage.getItem('kidcircle_feedback_data') || '[]');
+            console.table(feedbackData);
+            return feedbackData;
+        }
+
+        // Admin function to clear all data (use with caution)
+        function clearAllData() {
+            if (confirm('Are you sure you want to delete all feedback data? This cannot be undone!')) {
+                localStorage.removeItem('kidcircle_feedback_data');
+                alert('All feedback data has been cleared.');
+                location.reload();
+            }
+        }
+
+        // Show data management options for admin
+        function showDataManager() {
+            const feedbackData = JSON.parse(localStorage.getItem('kidcircle_feedback_data') || '[]');
+            
+            const modal = document.createElement('div');
+            modal.innerHTML = `
+                <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+                    <div style="background: white; padding: 2rem; border-radius: 15px; text-align: center; max-width: 600px; margin: 1rem;">
+                        <h3 style="color: #8B5CF6; margin-bottom: 1rem;">📊 Feedback Data Manager</h3>
+                        <p style="margin-bottom: 1.5rem;">Total responses collected: <strong>${feedbackData.length}</strong></p>
+                        
+                        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem;">
+                            <button onclick="downloadCSV()" style="background: #10B981; color: white; border: none; padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer;">📄 Download CSV</button>
+                            <button onclick="generateExcel()" style="background: #3B82F6; color: white; border: none; padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer;">📊 Download Excel</button>
+                            <button onclick="viewAllData()" style="background: #8B5CF6; color: white; border: none; padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer;">👀 View Data</button>
+                            <button onclick="clearAllData()" style="background: #EF4444; color: white; border: none; padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer;">🗑️ Clear All</button>
+                        </div>
+                        
+                        <button onclick="this.closest('div').parentElement.remove()" style="background: #6B7280; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer;">Close</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function updateCounter() {
             const counter = document.getElementById('counter');
             let current = parseInt(counter.textContent);
             if (current > 0) {
@@ -727,9 +980,31 @@
                 counter.textContent = current;
                 localStorage.setItem('kidcircle_counter', current);
             }
+        }
+
+        // Add admin access via console or special key combination
+        // Type showDataManager() in browser console to access data management
+        
+        // Add keyboard shortcut for admin access (Ctrl+Shift+A)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                e.preventDefault();
+                showDataManager();
+            }
+        });
+
+        // Add admin button to footer (hidden, only visible if data exists)
+        window.addEventListener('load', function() {
+            const feedbackData = JSON.parse(localStorage.getItem('kidcircle_feedback_data') || '[]');
             
-            // Reset form
-            this.reset();
+            if (feedbackData.length > 0) {
+                // Add subtle admin access button
+                const adminButton = document.createElement('div');
+                adminButton.innerHTML = `
+                    <button onclick="showDataManager()" style="position: fixed; bottom: 20px; left: 20px; background: rgba(139, 92, 246, 0.8); color: white; border: none; padding: 0.5rem; border-radius: 50%; cursor: pointer; z-index: 1000; font-size: 0.8rem; width: 40px; height: 40px;" title="Data Manager (${feedbackData.length} responses)">📊</button>
+                `;
+                document.body.appendChild(adminButton);
+            }
         });
 
         // Smooth scrolling for navigation links
