@@ -732,11 +732,21 @@
                     source: 'website'
                 };
 
-                // Save to localStorage for CSV generation
-                saveFeedbackToCSV(feedbackData);
-
-                // Show success message
-                showSuccessMessage(data.email);
+                fetch('/api/feedback', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(feedbackData),
+})
+.then(async (r) => {
+  if (!r.ok) throw new Error('Save failed');
+  showSuccessMessage(data.email);
+  updateCounter();
+  this.reset();
+})
+.catch((err) => {
+  console.error('Save error:', err);
+  alert('Error saving feedback. Please try again.');
+});
                 
                 // Update counter
                 updateCounter();

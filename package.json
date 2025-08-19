@@ -4,15 +4,25 @@
     "description": "KidCircle Marketing Website - Connect Parents, Create Playdates in Dubai",
     "main": "index.html",
     "scripts": {
-      "dev": "npx serve .",
-      "build": "echo 'Static site - no build needed'",
-      "start": "npx serve .",
-      "deploy": "vercel --prod"
+        "dev": "npx serve .",
+        "build": "echo 'Static site - no build needed'",
+        "start": "npx serve .",
+        "deploy": "vercel --prod"
     },
-    "keywords": ["kidcircle", "dubai", "parents", "playdates", "children", "families"],
+    "keywords": [
+        "kidcircle",
+        "dubai",
+        "parents",
+        "playdates",
+        "children",
+        "families"
+    ],
     "author": "KidCircle Team",
     "license": "MIT",
     "devDependencies": {
-      "serve": "^14.2.1"
+        "serve": "^14.2.1"
+    },
+    "dependencies": {
+        "@vercel/blob": "^1.1.1"
     }
-  }
+}
